@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+</head>
+<body>
+<div>
+    <input type="button" value="Get contact" onclick="getContactWithCallback()">
+</div>
+<div id="contact"/>
+</body>
+<script language="javascript" type="text/javascript">
+  function setContact(contact){
+    document.getElementById('contact').innerHTML=contact;
+  }
+  function getContactWithCallback(){
+    // 由于对象映射，所以调用test对象等于调用Android映射的对象
+    contact.getContact();
+  }
+
+</script>
+</html>
