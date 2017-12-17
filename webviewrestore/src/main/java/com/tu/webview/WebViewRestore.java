@@ -32,10 +32,7 @@ public class WebViewRestore extends WebView implements WebViewDelegate {
   }
 
   @Override public void onPageFinished() {
-    if (getContext() instanceof ContextDelegate
-        && requestCode != null
-        && resultCode != null
-        && data != null) {
+    if (getContext() instanceof ContextDelegate && requestCode != null && resultCode != null) {
       ((ContextDelegate) getContext()).setActivityResult(requestCode, resultCode, data);
     }
     requestCode = null;

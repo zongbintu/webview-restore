@@ -2,14 +2,12 @@ package com.example.webviewrestore;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -21,6 +19,7 @@ import com.tu.webview.WebViewRestore;
 public class MainActivity extends Activity implements ContextDelegate {
   private static final String URL_LOCAL = "file:///android_asset/index.htm";
   private static final int REQUEST_CODE_PICK_CONTACT = 100;
+
   WebViewRestore webView;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
@@ -28,20 +27,18 @@ public class MainActivity extends Activity implements ContextDelegate {
     setContentView(R.layout.activity_main);
 
     webView = findViewById(R.id.webview);
-    webView.getSettings().setJavaScriptEnabled(true);
 
+    webView.getSettings().setJavaScriptEnabled(true);
     webView.getSettings().setDatabaseEnabled(true);
     webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
     webView.getSettings().setDomStorageEnabled(true);
-
     webView.getSettings().setAppCachePath(getCacheDir().getPath());
-
     webView.getSettings().setAppCacheEnabled(true);
+
     webView.setWebViewClient(new WebViewClient() {
 
       @Override public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
-        Log.e("xxx", "onPageFinished");
         if (view instanceof WebViewDelegate) {
           ((WebViewDelegate) view).onPageFinished();
         }
@@ -76,6 +73,7 @@ public class MainActivity extends Activity implements ContextDelegate {
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == REQUEST_CODE_PICK_CONTACT) {
       if (Activity.RESULT_OK == resultCode && data != null) {
+        setContact(data);
         if (webView instanceof WebViewDelegate) {
           webView.onActivityResult(requestCode, resultCode, data);
         }
@@ -83,17 +81,23 @@ public class MainActivity extends Activity implements ContextDelegate {
     }
   }
 
-  @Override public void setActivityResult(int requestCode, int resultCode, Intent data) {
-    String contact = readContactFormResult(this, data);
+  private void setContact(Intent data) {
+    String contact = readContactFormResult(data);
     webView.loadUrl("javascript:setContact(\"" + contact + "\")");
   }
 
-  public static String readContactFormResult(Context context, Intent data) {
+  @Override public void setActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == REQUEST_CODE_PICK_CONTACT && Activity.RESULT_OK == resultCode) {
+      setContact(data);
+    }
+  }
+
+  public String readContactFormResult(Intent data) {
     StringBuilder contact = new StringBuilder();
     if (data != null) {
       try {
         Uri uri = data.getData();
-        ContentResolver contentResolver = context.getContentResolver();
+        ContentResolver contentResolver = this.getContentResolver();
 
         String contactId = uri.getLastPathSegment();
 
@@ -103,7 +107,7 @@ public class MainActivity extends Activity implements ContextDelegate {
 
         if (cursor != null) {
           String contactName = "";
-          String phoneNumber = "";
+          String phoneNumber;
 
           while (cursor.moveToNext()) {
             String name = cursor.getString(
@@ -114,7 +118,7 @@ public class MainActivity extends Activity implements ContextDelegate {
             contactName = !TextUtils.isEmpty(name) ? name : contactName;
             if (!TextUtils.isEmpty(number)) {
               phoneNumber = number.replaceAll(" |-", "");
-              contact.append(contactName + "  " + phoneNumber + "\n");
+              contact.append(contactName).append("  ").append(phoneNumber).append("\n");
             }
           }
         }
