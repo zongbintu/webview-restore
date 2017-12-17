@@ -20,5 +20,5 @@ android {
 
 dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])
-  compile project(path: ':webviewrestore')
+  compile project(path: ':webview-restore')
 }

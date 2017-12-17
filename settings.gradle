@@ -1,1 +1,1 @@
-include ':sample', ':webviewrestore'
+include ':sample', ':webview-restore'
