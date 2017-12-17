@@ -1,6 +1,6 @@
 # webview-vestore
 
-[![Release](https://jitpack.io/v/2tu/webview-retore.svg)](https://jitpack.io/#2tu/webview-retore)   
+[![Release](https://jitpack.io/v/2tu/webview-restore.svg)](https://jitpack.io/#2tu/webview-restore)
 
 Fuck WebView Restore by don't keep activities.
 
