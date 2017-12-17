@@ -6,8 +6,6 @@ import android.content.Intent;
  * @author Tu enum@foxmail.com.
  */
 
-public interface WebViewDelegate {
+public interface OnActivityResultCallback {
   void onActivityResult(int requestCode, int resultCode, Intent data);
-
-  void onPageFinished();
 }

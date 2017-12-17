@@ -12,15 +12,14 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import com.tu.webview.ContextDelegate;
-import com.tu.webview.WebViewDelegate;
-import com.tu.webview.WebViewRestore;
+import com.tu.webview.RestoreActivityResultCallback;
+import com.tu.webview.RestoreWebView;
 
-public class MainActivity extends Activity implements ContextDelegate {
+public class MainActivity extends Activity implements RestoreActivityResultCallback {
   private static final String URL_LOCAL = "file:///android_asset/index.htm";
   private static final int REQUEST_CODE_PICK_CONTACT = 100;
 
-  WebViewRestore webView;
+  RestoreWebView webView;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -39,9 +38,7 @@ public class MainActivity extends Activity implements ContextDelegate {
 
       @Override public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
-        if (view instanceof WebViewDelegate) {
-          ((WebViewDelegate) view).onPageFinished();
-        }
+        webView.onPageFinished(view, url);
       }
     });
     webView.addJavascriptInterface(new JSInteraction(), "contact");
@@ -50,6 +47,12 @@ public class MainActivity extends Activity implements ContextDelegate {
       webView.restoreState(savedInstanceState);
     } else {
       webView.loadUrl(URL_LOCAL);
+    }
+  }
+
+  @Override public void restoreActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == REQUEST_CODE_PICK_CONTACT && Activity.RESULT_OK == resultCode) {
+      setContact(data);
     }
   }
 
@@ -74,9 +77,7 @@ public class MainActivity extends Activity implements ContextDelegate {
     if (requestCode == REQUEST_CODE_PICK_CONTACT) {
       if (Activity.RESULT_OK == resultCode && data != null) {
         setContact(data);
-        if (webView instanceof WebViewDelegate) {
-          webView.onActivityResult(requestCode, resultCode, data);
-        }
+        webView.onActivityResult(requestCode, resultCode, data);
       }
     }
   }
@@ -84,12 +85,6 @@ public class MainActivity extends Activity implements ContextDelegate {
   private void setContact(Intent data) {
     String contact = readContactFormResult(data);
     webView.loadUrl("javascript:setContact(\"" + contact + "\")");
-  }
-
-  @Override public void setActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode == REQUEST_CODE_PICK_CONTACT && Activity.RESULT_OK == resultCode) {
-      setContact(data);
-    }
   }
 
   public String readContactFormResult(Intent data) {
