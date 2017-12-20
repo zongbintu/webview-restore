@@ -1,8 +1,8 @@
 # webview-vestore
 
-[![Release](https://jitpack.io/v/2tu/webview-retore.svg)](https://jitpack.io/#2tu/webview-retore)   
+[![Release](https://jitpack.io/v/2tu/webview-restore.svg)](https://jitpack.io/#2tu/webview-restore)
 
-Fuck WebView Restore by don't keep activities.
+onActivityResult loadUrl("javascript:xx") by WebView restore.
 
 ## Installation
 Add it in your root build.gradle at the end of repositories:
