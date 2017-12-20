@@ -50,8 +50,23 @@ public class MainActivity extends Activity implements RestoreActivityResultCallb
     }
   }
 
+  @Override protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    webView.saveState(outState);
+  }
+
+  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == REQUEST_CODE_PICK_CONTACT) {
+      webView.onActivityResult(requestCode, resultCode, data);
+      if (Activity.RESULT_OK == resultCode && data != null) {
+        setContact(data);
+      }
+    }
+  }
+
   @Override public void restoreActivityResult(int requestCode, int resultCode, Intent data) {
-    if (requestCode == REQUEST_CODE_PICK_CONTACT && Activity.RESULT_OK == resultCode) {
+    if (requestCode == REQUEST_CODE_PICK_CONTACT && RESULT_OK == resultCode) {
       setContact(data);
     }
   }
@@ -60,25 +75,6 @@ public class MainActivity extends Activity implements RestoreActivityResultCallb
     @JavascriptInterface public void getContact() {
       Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
       startActivityForResult(intent, REQUEST_CODE_PICK_CONTACT);
-    }
-  }
-
-  @Override protected void onSaveInstanceState(Bundle outState) {
-    super.onSaveInstanceState(outState);
-    webView.saveState(outState);
-  }
-
-  @Override protected void onRestoreInstanceState(Bundle savedInstanceState) {
-    super.onRestoreInstanceState(savedInstanceState);
-  }
-
-  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (requestCode == REQUEST_CODE_PICK_CONTACT) {
-      if (Activity.RESULT_OK == resultCode && data != null) {
-        setContact(data);
-        webView.onActivityResult(requestCode, resultCode, data);
-      }
     }
   }
 
