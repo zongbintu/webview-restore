@@ -19,7 +19,7 @@ Add the following dependency to your `build.gradle` file:
 
 ```
 dependencies {
-    compile 'com.github.2tu:webview-restore:0.1.0'
+    compile 'com.github.2tu:webview-restore:0.2.0'
     }
 ```  
 
