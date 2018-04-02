@@ -155,12 +155,4 @@ public class RestoreWebView extends WebView
       webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
     }
   }
-
-  @Override public void setWebChromeClient(WebChromeClient client) {
-    super.setWebChromeClient(new RestoreWebChromeClient());
-  }
-
-  @Override public void setWebViewClient(WebViewClient client) {
-    super.setWebViewClient(new RestoreWebviewClient(this));
-  }
 }

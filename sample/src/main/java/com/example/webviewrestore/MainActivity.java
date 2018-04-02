@@ -8,11 +8,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 import com.tu.webview.RestoreActivityResultCallback;
+import com.tu.webview.RestoreWebChromeClient;
 import com.tu.webview.RestoreWebView;
 
 public class MainActivity extends Activity implements RestoreActivityResultCallback {
@@ -20,12 +23,14 @@ public class MainActivity extends Activity implements RestoreActivityResultCallb
   private static final int REQUEST_CODE_PICK_CONTACT = 100;
 
   RestoreWebView webView;
+  ProgressBar progressBar;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
     webView = findViewById(R.id.webview);
+    progressBar = findViewById(R.id.progress_bar);
 
     webView.getSettings().setJavaScriptEnabled(true);
     webView.getSettings().setDatabaseEnabled(true);
@@ -34,11 +39,12 @@ public class MainActivity extends Activity implements RestoreActivityResultCallb
     webView.getSettings().setAppCachePath(getCacheDir().getPath());
     webView.getSettings().setAppCacheEnabled(true);
 
-    webView.setWebViewClient(new WebViewClient() {
-
-      @Override public void onPageFinished(WebView view, String url) {
-        super.onPageFinished(view, url);
-        webView.onPageFinished(view, url);
+    webView.setWebChromeClient(new RestoreWebChromeClient() {
+      @Override public void onProgressChanged(WebView view, int newProgress) {
+        super.onProgressChanged(view, newProgress);
+        if (newProgress == 100 && View.VISIBLE == progressBar.getVisibility()) {
+          progressBar.setVisibility(View.GONE);
+        }
       }
     });
     webView.addJavascriptInterface(new JSInteraction(), "contact");
